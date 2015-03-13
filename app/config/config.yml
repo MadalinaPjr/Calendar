@@ -29,12 +29,14 @@ framework:
 twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
+    form:
+        resources: ['bootstrap_3_layout.html.twig']
 
 # Assetic Configuration
 assetic:
     debug:          "%kernel.debug%"
-    use_controller: false
-    bundles:        [ ]
+    use_controller: true
+    bundles:        ["AppBundle"]
     #java: /usr/bin/java
     filters:
         cssrewrite: ~

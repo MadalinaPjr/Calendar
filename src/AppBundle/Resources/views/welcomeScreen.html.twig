@@ -1,0 +1,27 @@
+{% extends '::base.html.twig' %}
+{% block stylesheets %}
+    <style>
+        body {
+            background: url("http://www.array51.eu/bundles/app/img/bg-movie.jpg") no-repeat top center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+        .row {
+            text-align: center;
+        }
+        .row a {
+            margin-top: 300px;
+            padding:50px 100px;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <a href="{{ url('monthly') }}" class="btn btn-success">
+            Welcome to Array51 Calendar ! <br>
+            (Still a WIP)
+        </a>
+    </div>
+{% endblock %}

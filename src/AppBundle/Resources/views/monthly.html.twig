@@ -1,0 +1,100 @@
+{% extends '::base.html.twig' %}
+{% block stylesheets %}
+    <style>
+        .table tbody tr td {
+            height: 100px !important;
+            width: 14.2%;
+        }
+        .table-title {
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-2">
+            <h4>
+                <a href="{{ url('monthly', {month: prevDate | date('m'), year: prevDate | date('Y')}) }}"> < previous </a> |
+                <a href="{{ url('monthly', {month: nextDate | date('m'), year: nextDate | date('Y')}) }}"> next > </a>
+            </h4>
+        </div>
+        <div class="col-md-8">
+            <h2 class="table-title">{{ monthName }} {{ year }}</h2>
+        </div>
+        <div class="col-md-2">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered">
+                <thead>
+                    {% for weekday in weekdays %}
+                        <th> {{ weekday }} </th>
+                    {% endfor %}
+                </thead>
+                <tbody>
+                <tr>
+                    {% if cells.noOfEmptyCells > 0 and cells.noOfEmptyCells < 7 %}
+                        {% for i in 1..cells.noOfEmptyCells %}
+                            <td></td>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% for i in 1..cells.noOfFullCells %}
+                        <td data-toggle="modal" data-target="#myModal">
+                            <span>{{ i }}</span>
+                            {% for event in attribute(events, i) %}
+                                <div class="event">
+                                    <p class="text-{{ event.priority }}">
+                                        <a href="{{ url('edit_event', {id:event.id}) }}">{{ event.title }}</a>
+                                    </p>
+                                </div>
+                            {% endfor %}
+                        </td>
+                        {% if (i + cells.noOfEmptyCells) is divisible by(7) %}
+                </tr>
+                <tr>
+
+                        {% endif %}
+                    {% endfor %}
+
+                    {% for i in 1..cells.noOfLastEmptyCells %}
+                        <td></td>
+                    {% endfor %}
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            {{ form_start(form) }}
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Add Event</h4>
+                    </div>
+                    <div class="modal-body">
+                        {{ form_rest(form) }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            {{ form_end(form) }}
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(function(){
+            $(".event a").on("click", function(event){
+                event.stopPropagation();
+            })
+        })
+    </script>
+{% endblock %}
