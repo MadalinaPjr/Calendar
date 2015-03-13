@@ -107,14 +107,20 @@ class DefaultController extends Controller
 
     private function getEvents($days, $now)
     {
-        $events = [];
-        // TODO: Find a way to get all events for this month in a single query using the MySql IN condition
-        for ($i = 1; $i <= $days; $i++) {
-            $day = new \DateTime($i . "-" . $now->format("m-Y"));
-            $events[$i] = $this->getDoctrine()->getRepository("AppBundle:Event")->findBy(['date' => $day]);
-        }
+	$em = $this->getDoctrine()->getManager();
+	$query = $em->createQuery('select p from AppBundle:Event p '
+		. 'where p.date between :start and :end')
+		->setParameter('start', $now->format('Y-m-'). 1)
+		->setParameter('end', $now->format('Y-m-') . $days);
 
-        return $events;
+	$events = $query->getResult();   
+	$days = array_fill(1, $days, array());
+	
+	foreach($events as $value)
+	{
+	    $days[$value->getDate()->format('d')][] = $value;
+	}	
+        return $days;
     }
 
     private function getMonthName($month)
